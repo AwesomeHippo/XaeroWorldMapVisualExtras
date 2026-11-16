@@ -53,7 +53,7 @@ public abstract class GuiMapMixin extends Screen {
 
     @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At(value = "INVOKE", target = "Lxaero/lib/client/graphics/shader/WorldMapShader;setBrightness(F)V"))
     private void xaeroworldmapvisualextras$edges(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci, @Local(name = "renderedCaveLayer") int caveLayer, @Local(name = "matrix") Matrix4f matrix, @Local(name = "flooredCameraX") int cameraX, @Local(name = "flooredCameraZ") int cameraZ, @Local(name = "minLeafRegX") int minX, @Local(name = "maxLeafRegX") int maxX, @Local(name = "minLeafRegZ") int minZ, @Local(name = "maxLeafRegZ") int maxZ) {
-        MapFrame.drawEdges(this.mapProcessor.getMapWorld().getCurrentDimension().getLayeredMapRegions().getLayer(caveLayer), matrix, cameraX, cameraZ, minX, maxX, minZ, maxZ);
+        MapFrame.drawEdges(this.mapProcessor, caveLayer, matrix, cameraX, cameraZ, minX, maxX, minZ, maxZ);
     }
 
     @Redirect(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At(value = "FIELD", target = "Lxaero/map/graphics/CustomRenderTypes;GUI_BILINEAR:Lnet/minecraft/client/renderer/RenderType;", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lxaero/map/graphics/ImprovedFramebuffer;bindDefaultFramebuffer(Lnet/minecraft/client/Minecraft;)V")))

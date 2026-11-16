@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -18,11 +19,18 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.joml.Matrix4f;
 import xaero.lib.client.graphics.shader.LibShaders;
+import xaero.map.MapProcessor;
 import xaero.map.file.RegionDetection;
 import xaero.map.graphics.MapRenderHelper;
-import xaero.map.region.MapLayer;
+import xaero.map.region.LayeredRegionManager;
+import xaero.map.region.MapRegion;
+import xaero.map.region.MapTileChunk;
+import xaero.map.world.MapDimension;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 @EventBusSubscriber(modid = XaeroWorldMapVisualExtras.MOD_ID, value = Dist.CLIENT)
 public class MapFrame extends RenderType {
@@ -55,6 +63,10 @@ public class MapFrame extends RenderType {
 
     private static final float GRAY = 0.25F;
 
+    private static final Map<RegionDetection, Boolean> TERRAIN = new WeakHashMap<>();
+    private static int terrainLayer;
+    private static long lastDraw;
+
     private MapFrame(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setup, Runnable clear) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setup, clear);
     }
@@ -79,17 +91,30 @@ public class MapFrame extends RenderType {
         BufferUploader.drawWithShader(buffer.buildOrThrow());
     }
 
-    public static void drawEdges(MapLayer layer, Matrix4f matrix, int cameraX, int cameraZ, int minX, int maxX, int minZ, int maxZ) {
+    public static void drawEdges(MapProcessor processor, int caveLayer, Matrix4f matrix, int cameraX, int cameraZ, int minX, int maxX, int minZ, int maxZ) {
         Config.Edges edges = Config.CLEAN_EDGES.get();
         if (edges == Config.Edges.OFF) {
             return;
+        }
+        MapDimension dimension = processor.getMapWorld().getCurrentDimension();
+        LayeredRegionManager regions = dimension.getLayeredMapRegions();
+        boolean worldSave = dimension.isUsingWorldSave();
+        long time = Util.getMillis();
+        boolean reopened = time - lastDraw > 1000L;
+        lastDraw = time;
+        if (caveLayer != terrainLayer) {
+            TERRAIN.clear();
+            terrainLayer = caveLayer;
         }
         BufferBuilder buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         int x1 = Integer.MAX_VALUE;
         int z1 = Integer.MAX_VALUE;
         int x2 = Integer.MIN_VALUE;
         int z2 = Integer.MIN_VALUE;
-        for (RegionDetection region : layer.getLinkedCompleteWorldSaveDetectedRegions()) {
+        for (RegionDetection region : regions.getLayer(caveLayer).getLinkedCompleteWorldSaveDetectedRegions()) {
+            if (worldSave && !hasTerrain(processor, regions, caveLayer, region, reopened)) {
+                continue;
+            }
             int x = region.getRegionX();
             int z = region.getRegionZ();
             if (edges == Config.Edges.RECTANGLE) {
@@ -112,5 +137,43 @@ public class MapFrame extends RenderType {
         if (mesh != null) {
             EDGES.draw(mesh);
         }
+    }
+
+    private static boolean hasTerrain(MapProcessor processor, LayeredRegionManager regions, int caveLayer, RegionDetection detection, boolean reopened) {
+        Boolean known = TERRAIN.get(detection);
+        if (Boolean.TRUE.equals(known)) {
+            return true;
+        }
+        boolean terrain = (known == null || reopened) && hasCache(processor, caveLayer, detection);
+        if (!terrain) {
+            terrain = hasLoadedTerrain(regions.getLeaf(caveLayer, detection.getRegionX(), detection.getRegionZ()));
+        }
+        if (known == null || terrain) {
+            TERRAIN.put(detection, terrain);
+        }
+        return terrain;
+    }
+
+    private static boolean hasCache(MapProcessor processor, int caveLayer, RegionDetection detection) {
+        try {
+            File cache = processor.getMapSaveLoad().getCacheFile(detection, caveLayer, true, false);
+            return cache != null && cache.exists();
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static boolean hasLoadedTerrain(MapRegion region) {
+        if (region != null) {
+            for (int x = 0; x < 8; x++) {
+                for (int z = 0; z < 8; z++) {
+                    MapTileChunk chunk = region.getChunk(x, z);
+                    if (chunk != null && chunk.hasHadTerrain()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
