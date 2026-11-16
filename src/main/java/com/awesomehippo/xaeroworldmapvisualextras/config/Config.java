@@ -33,6 +33,14 @@ public class Config {
             .comment("Shadow opacity in %")
             .defineInRange("shadowOpacity", 100, 0, 100);
 
+    public static final ModConfigSpec.BooleanValue OPEN_SOUND = BUILDER
+            .comment("Play a sound when opening the map")
+            .define("openSound", true);
+
+    public static final ModConfigSpec.BooleanValue CLOSE_SOUND = BUILDER
+            .comment("Play a sound when closing the map")
+            .define("closeSound", true);
+
     public static final ModConfigSpec.BooleanValue SINGLEPLAYER_WRITING_DISTANCE = BUILDER
             .comment("Force Xaero's Map Writing Distance in singleplayer")
             .define("singleplayerWritingDistance", false);

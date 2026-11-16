@@ -8,6 +8,8 @@
   "xaeroworldmapvisualextras.configuration.cleanEdges": "Clean Edges",
   "xaeroworldmapvisualextras.configuration.shadowDistance": "Shadow Distance",
   "xaeroworldmapvisualextras.configuration.shadowOpacity": "Shadow Opacity",
+  "xaeroworldmapvisualextras.configuration.openSound": "Map Open Sound",
+  "xaeroworldmapvisualextras.configuration.closeSound": "Map Close Sound",
   "xaeroworldmapvisualextras.configuration.singleplayerWritingDistance": "Force Map Writing Distance in Singleplayer",
   "xaeroworldmapvisualextras.filter.off": "OFF",
   "xaeroworldmapvisualextras.filter.sepia": "Sepia",

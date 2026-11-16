@@ -34,6 +34,8 @@ public class SettingsScreen extends Screen implements IScreenBase {
         rows.addChild(new IntSlider("xaeroworldmapvisualextras.configuration.strength", Config.STRENGTH, 100));
         rows.addChild(new IntSlider("xaeroworldmapvisualextras.configuration.shadowDistance", Config.SHADOW_DISTANCE, Config.MAX_SHADOW_DISTANCE));
         rows.addChild(new IntSlider("xaeroworldmapvisualextras.configuration.shadowOpacity", Config.SHADOW_OPACITY, 100));
+        rows.addChild(CycleButton.onOffBuilder(Config.OPEN_SOUND.get()).create(0, 0, 200, 20, Component.translatable("xaeroworldmapvisualextras.configuration.openSound"), (button, value) -> Config.OPEN_SOUND.set(value)));
+        rows.addChild(CycleButton.onOffBuilder(Config.CLOSE_SOUND.get()).create(0, 0, 200, 20, Component.translatable("xaeroworldmapvisualextras.configuration.closeSound"), (button, value) -> Config.CLOSE_SOUND.set(value)));
         rows.addChild(CycleButton.onOffBuilder(Config.SINGLEPLAYER_WRITING_DISTANCE.get()).create(0, 0, 410, 20, Component.translatable("xaeroworldmapvisualextras.configuration.singleplayerWritingDistance"), (button, value) -> switchMap(value)), 2);
         grid.arrangeElements();
         grid.visitWidgets(this::addRenderableWidget);
