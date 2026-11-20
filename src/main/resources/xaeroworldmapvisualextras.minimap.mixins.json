@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.awesomehippo.xaeroworldmapvisualextras.mixin.minimap",
+  "refmap": "mixin.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "MinimapFBORendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

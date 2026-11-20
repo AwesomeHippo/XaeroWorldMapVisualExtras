@@ -1,0 +1,20 @@
+{
+  "key.categories.xaeroworldmapvisualextras": "Xaero's World Map - Visual Extras",
+  "key.xaeroworldmapvisualextras.settings": "Open Visual Extras Settings",
+  "xaeroworldmapvisualextras.settings.title": "Xaero's World Map - Visual Extras Settings",
+  "xaeroworldmapvisualextras.configuration.transparentBackground": "Transparent Background",
+  "xaeroworldmapvisualextras.configuration.filter": "Filter",
+  "xaeroworldmapvisualextras.configuration.strength": "Filter Strength",
+  "xaeroworldmapvisualextras.configuration.cleanEdges": "Clean Edges",
+  "xaeroworldmapvisualextras.configuration.shadowDistance": "Shadow Distance",
+  "xaeroworldmapvisualextras.configuration.shadowOpacity": "Shadow Opacity",
+  "xaeroworldmapvisualextras.configuration.openSound": "Map Open Sound",
+  "xaeroworldmapvisualextras.configuration.closeSound": "Map Close Sound",
+  "xaeroworldmapvisualextras.configuration.singleplayerWritingDistance": "Force Map Writing Distance in Singleplayer",
+  "xaeroworldmapvisualextras.filter.off": "OFF",
+  "xaeroworldmapvisualextras.filter.sepia": "Sepia",
+  "xaeroworldmapvisualextras.filter.grayscale": "Grayscale",
+  "xaeroworldmapvisualextras.edges.off": "OFF",
+  "xaeroworldmapvisualextras.edges.regions": "Regions",
+  "xaeroworldmapvisualextras.edges.rectangle": "Rectangle"
+}
